@@ -41,7 +41,6 @@ async def get_hotel(hotel_id: int,
                     ):
     return await db.hotels.get_one_or_none(id=hotel_id)
 
-
 @router.post("")
 async def create_hotel(db: DBDep,
        hotel_date: Annotated[HotelAdd, Body(openapi_examples={
