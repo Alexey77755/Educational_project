@@ -50,6 +50,7 @@ class BaseRepository:
         #         )
         #     raise HTTPException(status_code=409, detail=f"Ошибка: {e.detail}")
 
+
     async def add_bulk(self, data: list[BaseModel]):
         add_data_stmt = insert(self.model).values([item.model_dump() for item in data])
         # try:
