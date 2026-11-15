@@ -12,17 +12,17 @@ from src.schemas.hotels import Hotel
 
 class HotelsRepository(BaseRepository):
     model = HotelsOrm
-    mapper= HotelDataMapper
+    mapper = HotelDataMapper
 
     async def get_filtered_by_time(
-            self,
-            date_from: date,
-            date_to: date,
-            location,
-            title,
-            limit,
-            offset,
-    )-> list[Hotel]:
+        self,
+        date_from: date,
+        date_to: date,
+        location,
+        title,
+        limit,
+        offset,
+    ) -> list[Hotel]:
 
         rooms_ids_to_get = rooms_ids_for_booking(date_from=date_from, date_to=date_to)
         hotels_ids_to_get = (
@@ -30,21 +30,23 @@ class HotelsRepository(BaseRepository):
             .select_from(RoomsOrm)
             .where(RoomsOrm.id.in_(rooms_ids_to_get))
         )
-        query= select(HotelsOrm).where(HotelsOrm.id.in_(hotels_ids_to_get))
+        query = select(HotelsOrm).where(HotelsOrm.id.in_(hotels_ids_to_get))
 
         if location:
-            query = query.filter(func.lower(HotelsOrm.location).contains(location.strip().lower()))
+            query = query.filter(
+                func.lower(HotelsOrm.location).contains(location.strip().lower())
+            )
         if title:
-            query = query.filter(func.lower(HotelsOrm.title).contains(title.strip().lower()))
+            query = query.filter(
+                func.lower(HotelsOrm.title).contains(title.strip().lower())
+            )
 
-        query = (
-            query
-            .limit(limit)
-            .offset(offset)
-        )
-
+        query = query.limit(limit).offset(offset)
 
         # print(hotels_ids_to_get.compile(bind=engine, compile_kwargs={"literal_binds": True}))
         hotel = await self.session.execute(query)
 
-        return [HotelDataMapper.map_to_domain_entity(hotel) for hotel in hotel.scalars().all()]
+        return [
+            HotelDataMapper.map_to_domain_entity(hotel)
+            for hotel in hotel.scalars().all()
+        ]

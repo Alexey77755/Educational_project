@@ -20,7 +20,10 @@ PaginationDep = Annotated[PaginationParams, Depends()]
 def get_token(request: Request) -> str:
     token = request.cookies.get("access_token", None)
     if not token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Вы не предоставили токен доступа")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Вы не предоставили токен доступа",
+        )
     return token
 
 
@@ -37,4 +40,4 @@ async def get_db():
         yield db
 
 
-DBDep = Annotated[DBManager , Depends(get_db)]
+DBDep = Annotated[DBManager, Depends(get_db)]

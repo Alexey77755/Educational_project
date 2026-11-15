@@ -19,6 +19,7 @@ class FacilitiesORM(Base):
         secondary="rooms_facilities",
     )
 
+
 class RoomsFacilitiesORM(Base):
     __tablename__ = "rooms_facilities"
     id: Mapped[int] = mapped_column(primary_key=True)

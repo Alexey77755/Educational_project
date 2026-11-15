@@ -1,4 +1,4 @@
-#ruff: noqa: UP007
+# ruff: noqa: UP007
 """Add Table hotels
 
 Revision ID: 93b7030899a0
@@ -6,6 +6,7 @@ Revises:
 Create Date: 2026-07-14 16:25:41.576059
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -29,7 +30,5 @@ def upgrade() -> None:
     )
 
 
-
 def downgrade() -> None:
     op.drop_table("hotels")
-

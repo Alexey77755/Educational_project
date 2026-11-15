@@ -1,4 +1,4 @@
-#ruff: noqa: UP007
+# ruff: noqa: UP007
 """Add Table Rooms
 
 Revision ID: 8905a41a91ee
@@ -6,6 +6,7 @@ Revises: 93b7030899a0
 Create Date: 2026-07-14 16:27:18.708101
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 

@@ -1,4 +1,4 @@
-#ruff: noqa: UP007
+# ruff: noqa: UP007
 """Add email constraint
 
 Revision ID: 2ba8f564c038
@@ -6,6 +6,7 @@ Revises: 02667886e4a9
 Create Date: 2026-08-15 22:27:27.902895
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 

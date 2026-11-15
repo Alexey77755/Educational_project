@@ -1,4 +1,4 @@
-#ruff: noqa: UP007
+# ruff: noqa: UP007
 """Add table bookings
 
 Revision ID: 641145fbb595
@@ -6,6 +6,7 @@ Revises: 2ba8f564c038
 Create Date: 2026-09-11 11:25:15.352600
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 

@@ -3,7 +3,7 @@ from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-ENV_PATH = Path(__file__).resolve().parent.parent / '.env'
+ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 
 
 class Settings(BaseSettings):
@@ -30,9 +30,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
-    model_config = SettingsConfigDict(
-        env_file=ENV_PATH,
-        env_file_encoding='utf-8')
+    model_config = SettingsConfigDict(env_file=ENV_PATH, env_file_encoding="utf-8")
 
 
 settings = Settings()

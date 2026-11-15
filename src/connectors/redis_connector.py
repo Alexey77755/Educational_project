@@ -4,19 +4,20 @@ import redis.asyncio as redis
 
 
 class RedisManager:
-
     def __init__(
-            self,
-            host: str,
-            port: int,
+        self,
+        host: str,
+        port: int,
     ):
         self.host = host
         self.port = port
         self.redis = None
 
     async def connect(self) -> None:
-        self.redis = await redis.Redis(host=self.host, port=self.port,)
-
+        self.redis = await redis.Redis(
+            host=self.host,
+            port=self.port,
+        )
 
     # ---------- контекстный менеджер ----------
 

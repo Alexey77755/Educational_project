@@ -12,27 +12,30 @@ from src.schemas.users import User
 
 
 class HotelDataMapper(DataMapper):
-    db_model=HotelsOrm
-    schema=Hotel
+    db_model = HotelsOrm
+    schema = Hotel
+
 
 class RoomDataMapper(DataMapper):
-    db_model=RoomsOrm
-    schema=Room
+    db_model = RoomsOrm
+    schema = Room
+
 
 class RoomDataWithRelsMapper(DataMapper):
-    db_model=RoomsOrm
-    schema=RoomWithRels
+    db_model = RoomsOrm
+    schema = RoomWithRels
+
 
 class UserDataMapper(DataMapper):
-    db_model=UsersOrm
-    schema=User
-
+    db_model = UsersOrm
+    schema = User
 
 
 class BookingDataMapper(DataMapper):
-    db_model=BookingsOrm
-    schema= Booking
+    db_model = BookingsOrm
+    schema = Booking
+
 
 class FacilityDataMapper(DataMapper):
-    db_model=FacilitiesORM
-    schema= Facility
+    db_model = FacilitiesORM
+    schema = Facility

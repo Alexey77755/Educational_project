@@ -1,4 +1,4 @@
-#ruff: noqa: UP007
+# ruff: noqa: UP007
 """Add table facilities
 
 Revision ID: 07c98b65bf3f
@@ -6,6 +6,7 @@ Revises: 641145fbb595
 Create Date: 2026-09-19 19:23:38.537942
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -44,8 +45,6 @@ def upgrade() -> None:
     )
 
 
-
 def downgrade() -> None:
     op.drop_table("rooms_facilities")
     op.drop_table("facilities")
-

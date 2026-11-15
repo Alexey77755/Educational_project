@@ -1,11 +1,11 @@
-#ruff: noqa: I001
+# ruff: noqa: I001
 import asyncio
 import json
 
 import aiofiles
 from unittest import mock
 
-mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f:f).start()
+mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
 
 import pytest
 import pytest_asyncio
@@ -25,16 +25,18 @@ from src.config import settings
 from src.database import Base, async_session_maker_null_pool
 from src.main import app
 from src.models import *
-from httpx import ASGITransport,AsyncClient
+from httpx import ASGITransport, AsyncClient
 
 
 @pytest.fixture(scope="session", autouse=True)
 def check_test_mode():
     assert settings.MODE == "TEST"
 
+
 async def get_db_null_pool():
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
         yield db
+
 
 @pytest_asyncio.fixture()
 async def db():
@@ -42,7 +44,7 @@ async def db():
         yield db
 
 
-app.dependency_overrides[get_db]=get_db_null_pool
+app.dependency_overrides[get_db] = get_db_null_pool
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
@@ -53,14 +55,13 @@ async def setup_database(check_test_mode):
 
     with aiofiles.open("tests/mock_hotels.json", encoding="utf-8") as file:
         content = await file.read()
-        hotels= json.load(content)
-
+        hotels = json.load(content)
 
     with aiofiles.open("tests/mock_rooms.json", encoding="utf-8") as file:
         content = await file.read()
         rooms = json.load(content)
 
-    hotelsSchemas=[HotelAdd.model_validate(hotel) for hotel in hotels]
+    hotelsSchemas = [HotelAdd.model_validate(hotel) for hotel in hotels]
     roomsSchemas = [RoomAdd.model_validate(room) for room in rooms]
 
     async with DBManager(session_factory=async_session_maker_null_pool) as db_:
@@ -68,32 +69,34 @@ async def setup_database(check_test_mode):
         await db_.rooms.add_bulk(roomsSchemas)
         await db_.commit()
 
+
 @pytest_asyncio.fixture(scope="session")
 async def ac() -> AsyncGenerator[AsyncClient, Any]:
     async with AsyncClient(
-            transport=ASGITransport(app=app),
-            base_url="http://test") as ac:
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as ac:
         yield ac
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
-async def register_user(setup_database,ac ):
+async def register_user(setup_database, ac):
     await ac.post(
         "/auth/register",
         json={
             "email": "sobaka@mail.ru",
             "password": "ssds22",
-        }
+        },
     )
 
+
 @pytest_asyncio.fixture(scope="session", autouse=True)
-async def authenticated_ac(register_user,ac ):
+async def authenticated_ac(register_user, ac):
     await ac.post(
         "/auth/login",
         json={
             "email": "sobaka@mail.ru",
             "password": "ssds22",
-        }
+        },
     )
 
     assert ac.cookies["access_token"]

@@ -30,6 +30,7 @@ from src.init import redis_manager
 #         await send_email_bookings_today_checkin()
 #         await asyncio.sleep(5)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # При старте ПРИЛОЖЕНИЯ

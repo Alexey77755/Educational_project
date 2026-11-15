@@ -1,4 +1,4 @@
-#ruff: noqa: UP007
+# ruff: noqa: UP007
 """Add Table Users
 
 Revision ID: 02667886e4a9
@@ -6,6 +6,7 @@ Revises: 8905a41a91ee
 Create Date: 2026-07-26 22:45:53.072932
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -26,7 +27,6 @@ def upgrade() -> None:
         sa.Column("hashed_password", sa.String(length=100), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
-
 
 
 def downgrade() -> None:

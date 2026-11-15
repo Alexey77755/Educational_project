@@ -17,7 +17,9 @@ class BookingsRepository(BaseRepository):
 
     async def add(self, data: BookingAdd):
 
-        add_data_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
+        add_data_stmt = (
+            insert(self.model).values(**data.model_dump()).returning(self.model)
+        )
         try:
             result = await self.session.execute(add_data_stmt)
 
@@ -27,9 +29,9 @@ class BookingsRepository(BaseRepository):
         return BookingDataMapper.map_to_domain_entity(model)
 
     async def add_booking(
-            self,
-            data: BookingAdd,
-            hotel_id: int,
+        self,
+        data: BookingAdd,
+        hotel_id: int,
     ):
 
         rooms_ids_to_get = rooms_ids_for_booking(
@@ -45,15 +47,16 @@ class BookingsRepository(BaseRepository):
             new_booking = await self.add(data)
             return new_booking
         else:
-            raise HTTPException(status_code=409, detail="Этот номер занят на данные даты")
+            raise HTTPException(
+                status_code=409, detail="Этот номер занят на данные даты"
+            )
 
     async def get_bookings_with_today_checkin(self):
-        query = (
-            select(BookingsOrm)
-            .filter(BookingsOrm.date_from == date.today())
-        )
+        query = select(BookingsOrm).filter(BookingsOrm.date_from == date.today())
         res = await self.session.execute(query)
-        return [self.mapper.map_to_domain_entity(booking) for booking in res.scalars().all()]
+        return [
+            self.mapper.map_to_domain_entity(booking) for booking in res.scalars().all()
+        ]
 
     async def delete(self) -> None:
         delete_hotel_stmt = delete(self.model)

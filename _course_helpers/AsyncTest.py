@@ -22,7 +22,7 @@ async def get_user_bookings(user_id):
     print("Бронирования получены")
     return [
         {"hotel": "AZIMUT Сити Отель Смоленская", "city": "Москва"},
-        {"hotel": "Cosmos Saint-Petersburg Nevsky Hotel", "city": "Санкт-Петербург"}
+        {"hotel": "Cosmos Saint-Petersburg Nevsky Hotel", "city": "Санкт-Петербург"},
     ]
 
 
@@ -33,7 +33,7 @@ async def get_popular_hotels():
     return [
         {"hotel": "Marins Park Hotel", "city": "Сочи"},
         {"hotel": "AZIMUT Отель", "city": "Казань"},
-        {"hotel": "Cosmos Selection", "city": "Москва"}
+        {"hotel": "Cosmos Selection", "city": "Москва"},
     ]
 
 
@@ -43,7 +43,7 @@ async def get_recommendations(bookings):
     print("Рекомендации получены")
     return [
         {"hotel": "Гранд Отель Жемчужина", "city": "Сочи"},
-        {"hotel": "AZIMUT Парк Отель", "city": "Переславль-Залесский"}
+        {"hotel": "AZIMUT Парк Отель", "city": "Переславль-Залесский"},
     ]
 
 
@@ -54,22 +54,20 @@ async def build_dashboard(profile, bookings, popular_hotels, recommendations):
         "profile": profile,
         "bookings": bookings,
         "popular_hotels": popular_hotels,
-        "recommendations": recommendations
+        "recommendations": recommendations,
     }
 
 
 async def main():
     start_time = time.perf_counter()
-    user_id=login
-    bookings=await get_user_bookings(user_id)
+    user_id = login
+    bookings = await get_user_bookings(user_id)
 
-    results=await asyncio.gather(
-         get_user_profile(user_id),
-                        get_popular_hotels(),
-                        get_recommendations(bookings)
-                         )
+    results = await asyncio.gather(
+        get_user_profile(user_id), get_popular_hotels(), get_recommendations(bookings)
+    )
 
-    await build_dashboard(results[0], bookings,results[1],results[2] )
+    await build_dashboard(results[0], bookings, results[1], results[2])
     print("Времени прошло:", time.perf_counter() - start_time)
 
 

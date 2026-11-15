@@ -1,25 +1,23 @@
 import pytest
 
 
-@pytest.mark.parametrize("email, password, status_code", [
-    ("sobaka23@mail.ru", "sd2323", 200),
-    ("sobaka23@mail.ru", "sd2323", 400),
-    ("sobaka23mail.ru", "sd2323", 422),
-    ("sobaka233@mail.ru", "sd2323", 200),
-])
+@pytest.mark.parametrize(
+    "email, password, status_code",
+    [
+        ("sobaka23@mail.ru", "sd2323", 200),
+        ("sobaka23@mail.ru", "sd2323", 400),
+        ("sobaka23mail.ru", "sd2323", 422),
+        ("sobaka233@mail.ru", "sd2323", 200),
+    ],
+)
 async def test_auth_flow(
-        email: str,
-        password: str,
-        status_code: int,
+    email: str,
+    password: str,
+    status_code: int,
     ac,
-
 ):
     response_register = await ac.post(
-        "/auth/register",
-        json={
-            "email": email,
-            "password": password
-        }
+        "/auth/register", json={"email": email, "password": password}
     )
 
     assert response_register.status_code == status_code
@@ -31,7 +29,7 @@ async def test_auth_flow(
         json={
             "email": email,
             "password": password,
-        }
+        },
     )
 
     assert response_login.status_code == status_code
