@@ -34,7 +34,7 @@ async def get_room(db: DBDep, hotel_id: int, room_id: int):
 async def create_rooms(
     db: DBDep, hotel_id: int, room_date: Annotated[RoomAddRequest, Body()]
 ):
-    data = RoomAdd(hotel_id=hotel_id, **room_date.model_dump())
+    data:RoomAdd = RoomAdd(hotel_id=hotel_id, **room_date.model_dump())
 
     # ======================================
     # для дебага

@@ -2,7 +2,9 @@ import asyncio
 import os
 import sys
 from asyncio import sleep
+from typing import Any, Protocol, cast
 
+from celery.result import AsyncResult
 from celery.signals import worker_init
 from PIL import Image
 
@@ -10,6 +12,21 @@ from src.database import async_session_maker_null_pool
 from src.tasks.celery_app import celery_instance
 from src.utils.db_manager import DBManager
 
+class CeleryTask(Protocol):
+    """Интерфейс задачи: у неё есть .delay и .apply_async."""
+    def delay(self, *args: Any, **kwargs: Any) -> AsyncResult:
+        ...
+    def apply_async(
+        self,
+        args: tuple | None = None,
+        kwargs: dict | None = None,
+        **options: Any,
+    ) -> AsyncResult:
+        ...
+
+def as_celery_task(func: Any) -> CeleryTask:
+    """Приводит объект декоратора @task к типизированному интерфейсу."""
+    return cast(CeleryTask, func)
 
 @worker_init.connect
 def setup_event_loop(**kwargs):
@@ -18,13 +35,14 @@ def setup_event_loop(**kwargs):
 
 
 @celery_instance.task
-def test_task():
-    sleep(5)
+async def _test_task_impl():
+    await sleep(5)
     print("Закончил")
 
+test_task = as_celery_task(_test_task_impl)
 
 @celery_instance.task
-def resize_image(image_path: str):
+def _resize_image_impl(image_path: str):
     sizes = [1000, 100, 30]
     output_folder: str = "src/static/images"
 
@@ -57,6 +75,7 @@ def resize_image(image_path: str):
             f"Изображение сохранено в следующих размерах: {sizes} в папке {output_folder}"
         )
 
+resize_image = as_celery_task(_resize_image_impl)
 
 async def get_bookings_with_today_checkin_helper():
     print("начало")
@@ -66,5 +85,10 @@ async def get_bookings_with_today_checkin_helper():
 
 
 @celery_instance.task(name="booking_today_checkin")
-def sen_emails_to_users_with_today_checkin():
-    asyncio.run(get_bookings_with_today_checkin_helper())
+def _send_emails_to_users_with_today_checkin_impl():
+    loop = asyncio.new_event_loop()
+    try:
+        loop.run_until_complete(get_bookings_with_today_checkin_helper())
+    finally:
+        loop.close()
+

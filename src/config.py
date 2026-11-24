@@ -33,4 +33,4 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=ENV_PATH, env_file_encoding="utf-8")
 
 
-settings = Settings()
+settings = Settings() # type: ignore[call-arg]

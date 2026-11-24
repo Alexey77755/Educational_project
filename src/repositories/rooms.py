@@ -1,15 +1,19 @@
 from datetime import date
+from typing import Protocol
 
+from pydantic import BaseModel
 from sqlalchemy import delete, select, update
 from sqlalchemy.orm import joinedload
 
+from src.schemas.rooms import Room, RoomAdd, RoomPatch
 from src.models.rooms import RoomsOrm
-from src.repositories.base import BaseRepository
+from src.repositories.base import BaseRepository, SchemaType
 from src.repositories.mappers.mappers import RoomDataMapper, RoomDataWithRelsMapper
 from src.repositories.utils import rooms_ids_for_booking
 
 
-class RoomsRepository(BaseRepository):
+
+class RoomsRepository(BaseRepository[Room, RoomsOrm]):
     model = RoomsOrm
     mapper = RoomDataMapper
 
@@ -42,7 +46,7 @@ class RoomsRepository(BaseRepository):
             return None
         return RoomDataWithRelsMapper.map_to_domain_entity(model)
 
-    async def edit(self, data: model, exclude_unset: bool = False, **filter_by) -> None:
+    async def edit(self, data:  RoomAdd | RoomPatch, exclude_unset: bool = False, **filter_by) -> None:
 
         room_id = filter_by.get("id")
         if await self.check(hotel_id=data.hotel_id, id=room_id):

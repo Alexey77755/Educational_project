@@ -1,0 +1,28 @@
+{
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    "**/.venv",
+    "**/venv",
+    "**/migrations",
+    "**/alembic",
+    "**/node_modules",
+    "**/.pytest_cache",
+    "**/.mypy_cache"
+  ],
+  "ignore": [
+    "src/migrations"
+  ],
+  "defineConstant": {
+    "DEBUG": true
+  },
+  "stubPath": "src/stubs",
+  "reportMissingImports": "error",
+  "reportMissingTypeStubs": false,
+  "pythonVersion": "3.11",
+  "pythonPlatform": "Linux",
+  "typeCheckingMode": "basic",
+  "useLibraryCodeForTypes": true
+}

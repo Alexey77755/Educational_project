@@ -24,8 +24,8 @@ class RoomsFacilitiesRepository(BaseRepository):
             .where(self.model.room_id == room_id)
         )
 
-        facility_base = await self.session.execute(facility_ids_for_room)
-        facility_base: list[int] = facility_base.scalars().all()
+        result = await self.session.execute(facility_ids_for_room)
+        facility_base: list[int] = result.scalars().all()
 
         facilities_for_append: list[int] = list(
             set(facilities_ids) - set(facility_base)

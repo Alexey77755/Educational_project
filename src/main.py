@@ -37,7 +37,7 @@ async def lifespan(app: FastAPI):
     # asyncio.create_task(run_send_email_regularly())
     await redis_manager.connect()
 
-    FastAPICache.init(RedisBackend(redis_manager.redis), prefix="fastapi-cache")
+    FastAPICache.init(RedisBackend(redis_manager.get_client()), prefix="fastapi-cache")
     yield
     await redis_manager.close()
     # пРИ ВЫКЛЮЧЕНИИ/ПЕРЕЗАГРУЗКЕ ПРИЛОЖЕНИЯ
@@ -63,6 +63,9 @@ app.include_router(router_images)
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
+    if app.openapi_url is None:
+        raise RuntimeError("OpenAPI URL не настроен")
+
     return get_swagger_ui_html(
         openapi_url=app.openapi_url,
         title=app.title + " - Swagger UI",

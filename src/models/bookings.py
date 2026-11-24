@@ -18,9 +18,9 @@ class BookingsOrm(Base):
     price: Mapped[int]
 
     @hybrid_property
-    def total_cost(self) -> int:
+    def total_cost(self) -> int: # type: ignore[reportRedeclaration]
         return self.price * (self.date_to - self.date_from).days
 
     @total_cost.expression
-    def total_cost(cls) -> int:
+    def total_cost(cls) : # type: ignore[reportRedeclaration]
         return cls.price * func.date_part("day", cls.date_to - cls.date_from)

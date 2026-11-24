@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from fastapi_cache.decorator import cache
 
+from schemas.rooms import Room
 from src.api.dependencies import DBDep, UserIdDeep
 from src.schemas.bookings import BookingAdd, BookingAddRequest
 
@@ -21,9 +22,9 @@ async def get_me_bokings(db: DBDep, user_id: UserIdDeep):
 
 @router.post("/")
 async def create_booking(
-    user_id: UserIdDeep,
-    db: DBDep,
-    booking_date: BookingAddRequest,
+        user_id: UserIdDeep,
+        db: DBDep,
+        booking_date: BookingAddRequest,
 ):
     # ======================================
     # для дебага

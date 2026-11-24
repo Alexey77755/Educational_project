@@ -2,6 +2,7 @@ from datetime import date
 from typing import Annotated
 
 from fastapi import APIRouter, Body, Query
+from fastapi.openapi.models import Example
 from fastapi_cache.decorator import cache
 
 from src.api.dependencies import DBDep, PaginationDep
@@ -13,12 +14,12 @@ router = APIRouter(prefix="/hotels", tags=["Отели"])
 @router.get("")
 @cache(expire=10)
 async def get_hotels(
-    pagination: PaginationDep,
-    db: DBDep,
-    date_from: Annotated[date, Query(default="2026-09-15")],
-    date_to: Annotated[date, Query(default="2026-09-20")],
-    title: str | None = Query(None, description="Hotel name"),
-    location: str | None = Query(None, description="Location"),
+        pagination: PaginationDep,
+        db: DBDep,
+        date_from: Annotated[date, Query(default="2026-09-15")],
+        date_to: Annotated[date, Query(default="2026-09-20")],
+        title: str | None = Query(None, description="Hotel name"),
+        location: str | None = Query(None, description="Location"),
 ):
     per_page = pagination.per_page or 5
 
@@ -38,30 +39,31 @@ async def get_hotel(hotel_id: int, db: DBDep):
     return await db.hotels.get_one_or_none(id=hotel_id)
 
 
+BOOKING_EXAMPLES: dict[str, Example] = {
+    "1": Example(
+        summary="Сочи",
+        value={
+            "title": "Отель Сочи 5 звезд",
+            "location": "У моря",
+        },
+    ),
+    "2": Example(
+        summary="Дубай",
+        value={
+            "title": "Отель Дубай",
+            "location": "У фонтана",
+        },
+    ),
+}
+
+
 @router.post("")
 async def create_hotel(
-    db: DBDep,
-    hotel_date: Annotated[
-        HotelAdd,
-        Body(
-            openapi_examples={
-                "1": {
-                    "summery": "Сочи",
-                    "value": {
-                        "title": "Отель Сочи 5 звезд",
-                        "location": "У моря",
-                    },
-                },
-                "2": {
-                    "summery": "Дубай",
-                    "value": {
-                        "title": "Отель Дубай",
-                        "location": "У фонтана",
-                    },
-                },
-            }
-        ),
-    ],
+        db: DBDep,
+        hotel_date: Annotated[
+            HotelAdd,
+            Body(openapi_examples=BOOKING_EXAMPLES),
+        ],
 ):
     # ======================================
     # для дебага
@@ -74,9 +76,9 @@ async def create_hotel(
 
 @router.put("/{hotel_id}")
 async def edit_hotel(
-    db: DBDep,
-    hotel_id: int,
-    hotel_date: HotelAdd,
+        db: DBDep,
+        hotel_id: int,
+        hotel_date: HotelAdd,
 ):
     await db.hotels.edit(hotel_date, id=hotel_id)
     await db.commit()
@@ -89,9 +91,9 @@ async def edit_hotel(
     description="Частичное обновление",
 )
 async def partially_edit_hotel(
-    db: DBDep,
-    hotel_id: int,
-    hotel_date: HotelPATCH,
+        db: DBDep,
+        hotel_id: int,
+        hotel_date: HotelPATCH,
 ):
     await db.hotels.edit(hotel_date, exclude_unset=True, id=hotel_id)
     await db.commit()

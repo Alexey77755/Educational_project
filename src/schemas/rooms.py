@@ -36,7 +36,7 @@ class RoomPatchRequest(BaseModel):
 
 
 class RoomPatch(BaseModel):
-    hotel_id: int | None = None
+    hotel_id: int
     title: str | None = None
     description: str | None = None
     price: int | None = None

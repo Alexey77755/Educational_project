@@ -1,14 +1,20 @@
+from typing import TypeVar, Generic
+
 from fastapi import HTTPException
 from pydantic import BaseModel
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import MultipleResultsFound
 
+from src.database import Base
 from src.repositories.mappers.base import DataMapper
+from utils.db_manager import DBManager
 
+SchemaType = TypeVar("SchemaType", bound=BaseModel)
+DBModelType = TypeVar("DBModelType", bound=Base)
 
-class BaseRepository:
-    model = None
-    mapper: DataMapper = None
+class BaseRepository(Generic[SchemaType, DBModelType]):
+    model : type[DBModelType]
+    mapper: type[DataMapper[SchemaType, DBModelType]]
 
     def __init__(self, session):
         self.session = session
@@ -28,7 +34,7 @@ class BaseRepository:
         model = await self.session.execute(query)
         model = model.scalars().one_or_none()
         if model is None:
-            return None
+            raise HTTPException(status_code=404, detail="Model not found")
         return self.mapper.map_to_domain_entity(model)
 
     async def add(self, data: BaseModel):
@@ -50,7 +56,7 @@ class BaseRepository:
         #         )
         #     raise HTTPException(status_code=409, detail=f"Ошибка: {e.detail}")
 
-    async def add_bulk(self, data: list[BaseModel]):
+    async def add_bulk(self, data: list[SchemaType]):
         add_data_stmt = insert(self.model).values([item.model_dump() for item in data])
         # try:
         await self.session.execute(add_data_stmt)
